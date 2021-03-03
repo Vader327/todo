@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:600">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Add Task</title>
+</head>
+
+<body style="margin: 0;">
+  <div style="text-align: center; align-items: center; height: 100%;">
+    <textarea class="task" placeholder="Task" autofocus rows="1" oninput="auto_grow(this)" id="task_name"></textarea>
+
+    <div class="switch-box">
+      <h3 class="add-item" style="transform: none; color: coral;">Remind Me</h3>
+      <label class="switch">
+        <input type="checkbox" onclick="set_reminder(this)" id="switch">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <input class="task invisible" type="datetime-local" id="datefield">
+
+    <button class="add_final" onclick="addTask()">
+      <h3 class="add-item" style="transform: none;">Add</h3>
+    </button>
+  </div>
+
+  <div class="switch-box invisible" id="alert-box"
+  style="justify-content: center; position: absolute; top: -5px; right: 18px;">
+    <i class="fa fa-exclamation-circle" style="color: white; margin-right: 5px;"></i>
+    <p class="add-item" style="font-size: 15px; transform: none; color: white;">Cannot be empty!</p>
+  </div>
+</body>
+
+<script>
+  const { ipcRenderer } = require('electron');
+
+  function auto_grow(element){
+    element.style.height = "1px";
+    element.style.height = (element.scrollHeight)+"px";
+
+    if(element.value.toString().trim()!=""){
+      document.getElementById("alert-box").classList.add("invisible")
+    }
+  }
+
+  function addTask(){
+    var task_name = document.getElementById("task_name").value
+    var alert_box = document.getElementById("alert-box")
+    var time = document.getElementById("datefield").value;
+    var proceed = true;
+
+    for(var obj of Object.entries(localStorage)){
+      if(JSON.parse(obj[1]).name == task_name){
+        proceed = false;
+      }
+    }
+
+    if(task_name.toString().trim()!="" && proceed==true){
+      alert_box.classList.add("invisible")
+
+      if(document.getElementById("switch").checked){
+        ipcRenderer.send('add_task', {name: task_name, time: time});
+      }
+      else{ipcRenderer.send('add_task', {name: task_name, time: null});}
+    }
+
+    else if(task_name.toString().trim()==""){
+      alert_box.querySelector("p").innerHTML = "Cannot be empty!";
+      alert_box.classList.remove("invisible")
+    }
+    else{
+      alert_box.classList.remove("invisible");
+      alert_box.querySelector("p").innerHTML = "Task Already Exists!";
+    }
+  }
+
+  function set_reminder(e){
+    var checkbox = document.getElementById("datefield")
+    if(e.checked){
+      checkbox.classList.remove("invisible")
+    }
+    else{
+      checkbox.classList.add("invisible")
+    }
+  }
+
+  var today = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().slice(0, -1)
+  var datefield = document.getElementById("datefield");
+  datefield.value = today;
+  datefield.setAttribute("min", today);
+</script>
+</html>

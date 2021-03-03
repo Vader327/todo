@@ -1,0 +1,201 @@
+#title{
+  font-family: 'Poppins';
+  text-align: center;
+  color: white;
+}
+#bg{
+  background: coral;
+  align-items: center;
+  width: 100%;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 10px;
+}
+
+.add{
+  display: flex;
+  background-color: #1cf0a9;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: flex-end;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  float: right;
+  transition: width 0.5s;
+  margin-bottom: 10px;
+}
+.add:hover{
+  width: 200px;
+  transition: width 0.5s;
+}
+.add::before{
+  content: "Add Task";
+  right: 70px;
+  color: white;
+  font-size: 20px;
+  font-family: 'Poppins';
+  font-weight: 900;
+  position: absolute;
+}
+
+.add-item{
+  color: white;
+  font-family: 'Poppins';
+  transform: translate(-50%);
+  font-weight: 600;
+}
+
+.task{
+  outline: none;
+  border: none;
+  font-family: 'Poppins';
+  border-bottom: 3px solid coral;
+  width: 90%;
+  resize: none;
+  max-height: 2.5cm;
+  margin-top: 20px;
+}
+.task::placeholder{
+  color: coral;
+  font-family: 'Poppins';
+}
+
+.add_final{
+  position: absolute;
+  bottom: 30px;
+  transform: translateX(-50%);
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  background-color: coral;
+  width: 100px;
+  height: 40px;
+  align-items: center;
+  margin-top: 10px;
+  border-radius: 15px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+.add_final:hover{
+  background-color: #da6b43;
+  transition: background-color 0.5s;
+}
+.collection{
+  padding: 0;
+}
+.collection-item{
+  position: relative;
+  list-style-type: none;
+  font-family: 'Poppins';
+  box-shadow: 0 0 10px lightgray;
+  padding-left: 10px;
+  padding-right: 8px;
+  border-radius: 10px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  word-break: break-all;
+}
+
+.del{
+  float: right;
+  background: tomato;
+  border: none;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+  padding: 8px;
+  text-align: center;
+  align-items: center;
+  display: none;
+  outline: none;
+  cursor: pointer;
+}
+.del:active{
+  background: #b40000;
+}
+
+.fa-trash{
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+
+#time{
+  position: absolute;
+  bottom: -13px;
+  right: 40px;
+  color: darkgray;
+  font-size: 13px;
+}
+
+.invisible{
+  display: none !important;
+}
+
+.switch-box{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10px;
+  align-items: center;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 23px;
+}
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 4px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #30d158;
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px #30d158;
+}
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+#alert-box{
+  background-color: coral;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 30px;
+  border-radius: 10px;
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:600">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <title>To Do</title>
+</head>
+<body>
+  <div id="bg">
+    <h1 id="title">To Do List</h1>
+  </div>
+
+  <ul></ul>
+
+  <button class="add">
+    <p class="add-item" style="font-size: 30px;">+</p>
+  </button>
+</body>
+
+<script>
+  const { ipcRenderer } = require('electron');
+  var ul = document.getElementsByTagName("ul")[0];
+  ul.className = "collection"
+
+  document.querySelectorAll(".collection-item").forEach((e)=>{
+    e.addEventListener("mouseover", ()=>{
+      e.querySelector('.del').style.display="flex";
+    })
+    e.addEventListener("mouseout", ()=>{
+      e.querySelector('.del').style.display="none";
+    })
+  });
+
+  document.getElementsByClassName("add")[0].addEventListener("click", ()=>{
+    ipcRenderer.send('open_window')
+  })
+
+  ipcRenderer.on("delete_task", function(e, item){
+    var to_delete = [...document.getElementsByClassName("collection-item")]
+    for(e in to_delete){
+      if(to_delete[e].querySelector('p').innerHTML == item){
+        to_delete[e].parentNode.removeChild(to_delete[e])
+        deleteTask(to_delete[e].querySelector('p').innerHTML)
+      }
+    }
+  })
+
+  function deleteTask(item){
+    for(var obj of Object.entries(localStorage)){
+      if(JSON.parse(obj[1]).name == item){
+        localStorage.removeItem(obj[0].toString());
+      }
+    }
+  }
+
+  function addTask(item){
+    var datetime;
+    if(item.time!=null){
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+      var dateObj = new Date(item.time);
+      var date = String(dateObj.getDate()).padStart(2, '0') + " " + monthNames[dateObj.getMonth()] + ", " + dateObj.getFullYear();
+      var time = dateObj.getHours() + ":" + dateObj.getMinutes() + ":" + dateObj.getSeconds();
+      var hourEnd = time.indexOf(":");
+      var H = +time.substr(0, hourEnd);
+      var h = H % 12 || 12;
+      var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+      time = h + time.substr(hourEnd, 3) + ampm;
+      datetime = date + " at " + time;
+    }
+    else{
+      datetime=""
+    }
+
+    var li = document.createElement("li");
+    li.className = "collection-item";
+    var p = document.createElement("p");
+    p.appendChild(document.createTextNode(item.name));
+    var time = document.createElement("p");
+    time.appendChild(document.createTextNode(datetime));
+    time.id = "time"
+    li.appendChild(p);
+    li.appendChild(time);
+    var del = document.createElement("button");
+    del.className = "del";
+    var i = document.createElement("i");
+    i.className="fa fa-trash";
+    del.appendChild(i);
+    li.appendChild(del);
+    ul.appendChild(li);
+
+    li.addEventListener("mouseover", ()=>{
+      li.querySelector('.del').style.display="flex";
+    })
+    li.addEventListener("mouseout", ()=>{
+      li.querySelector('.del').style.display="none";
+    })
+    del.addEventListener("click", ()=>{
+      li.parentNode.removeChild(li);
+      deleteTask(item.name);
+    })
+  }
+
+  ipcRenderer.on("add_task", function(e, item){
+    addTask(item);
+    localStorage.setItem(Object.entries(localStorage).length, JSON.stringify({name: item.name, time: item.time}))
+  })
+
+  for(var x in Object.entries(localStorage)){
+    addTask((JSON.parse(localStorage.getItem(x))));
+  }
+</script>
+</html>
